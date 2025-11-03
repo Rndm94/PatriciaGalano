@@ -1,206 +1,406 @@
-<!DOCTYPE HTML>
-<!--
-	Prologue by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Prologue by HTML5 UP</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-	</head>
-	<body class="is-preload">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor de Español con Gemini</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-		<!-- Header -->
-			<div id="header">
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
 
-				<div class="top">
+        .container {
+            text-align: center;
+            position: relative;
+        }
 
-					<!-- Logo -->
-						<div id="logo">
-							<span class="image avatar48"><img src="images/avatar.PNG" alt="" /></span>
-							<h1 id="title">Patricia Galano</h1>
-							<p>Sales Expert</p>
-						</div>
+        .brain-button {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #8e2de2, #4a00e0);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 90px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            user-select: none;
+            position: relative;
+            z-index: 10;
+        }
 
-					<!-- Nav -->
-						<nav id="nav">
-							<ul>
-								<li><a href="#top" id="top-link"><span class="icon solid fa-home">Intro</span></a></li>
-								<li><a href="#portfolio" id="portfolio-link"><span class="icon solid fa-th">Our Work</span></a></li>
-								<li><a href="#about" id="about-link"><span class="icon solid fa-user">About Locally Sourced Contractors</span></a></li>
-								<li><a href="#contact" id="contact-link"><span class="icon solid fa-envelope">Contact</span></a></li>
-							</ul>
-						</nav>
+        .brain-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
 
-				</div>
+        .brain-button:active {
+            transform: scale(0.98);
+        }
 
-				<div class="bottom">
+        .listening {
+            animation: pulse 0.3s infinite alternate;
+            background: linear-gradient(145deg, #ff416c, #ff4b2b);
+        }
 
-					<!-- Social Icons -->
-						<ul class="icons">
-							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-							<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-						</ul>
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            }
+            to {
+                transform: scale(1.15);
+                box-shadow: 0 0 50px rgba(255, 255, 255, 1);
+            }
+        }
 
-				</div>
+        .status {
+            margin-top: 40px;
+            color: white;
+            font-size: 22px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            min-height: 30px;
+            font-weight: 500;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
 
-			</div>
+        .waves {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: wave 2s infinite;
+            pointer-events: none;
+        }
 
-		<!-- Main -->
-			<div id="main">
+        .waves.listening {
+            display: block;
+        }
 
-				<!-- Intro -->
-					<section id="top" class="one dark cover">
-						<div class="container">
+        @keyframes wave {
+            0% {
+                width: 250px;
+                height: 250px;
+                opacity: 1;
+            }
+            100% {
+                width: 400px;
+                height: 400px;
+                opacity: 0;
+            }
+        }
 
-							<header>
-								<h2 class="alt">Hi! I'm <strong>Patricia's Page</strong>, <a href="#">a</a> responsive<br />
-								site template designed by <a href="#">Benitin</a>.</h2>
-								<p>Ligula scelerisque justo sem accumsan diam quis<br />
-								vitae natoque dictum sollicitudin elementum.</p>
-							</header>
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+        }
 
-							<footer>
-								<a href="#portfolio" class="button scrolly">Magna Aliquam</a>
-							</footer>
+        .hidden {
+            display: none;
+        }
 
-						</div>
-					</section>
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
 
-				<!-- Portfolio -->
-					<section id="portfolio" class="two">
-						<div class="container">
+        .success {
+            color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="brain-button" id="brainButton">🧠</button>
+        <div class="waves" id="waves"></div>
+        <div class="status" id="status">Presiona el cerebro para hablar</div>
+    </div>
+    
+    <div class="footer">
+        Tutor de Español - Desarrollado por Rafael
+    </div>
 
-							<header>
-								<h2>Portfolio</h2>
-							</header>
-
-							<p>Vitae natoque dictum etiam semper magnis enim feugiat convallis convallis
-							egestas rhoncus ridiculus in quis risus amet curabitur tempor orci penatibus.
-							Tellus erat mauris ipsum fermentum etiam vivamus eget. Nunc nibh morbi quis
-							fusce hendrerit lacus ridiculus.</p>
-
-							<div class="row">
-								<div class="col-4 col-12-mobile">
-									<article class="item">
-										<a href="#" class="image fit"><img src="images/pic02.jpg" alt="" /></a>
-										<header>
-											<h3>Ipsum Feugiat</h3>
-										</header>
-									</article>
-									<article class="item">
-										<a href="#" class="image fit"><img src="images/pic03.jpg" alt="" /></a>
-										<header>
-											<h3>Rhoncus Semper</h3>
-										</header>
-									</article>
-								</div>
-								<div class="col-4 col-12-mobile">
-									<article class="item">
-										<a href="#" class="image fit"><img src="images/pic04.jpg" alt="" /></a>
-										<header>
-											<h3>Magna Nullam</h3>
-										</header>
-									</article>
-									<article class="item">
-										<a href="#" class="image fit"><img src="images/pic05.jpg" alt="" /></a>
-										<header>
-											<h3>Natoque Vitae</h3>
-										</header>
-									</article>
-								</div>
-								<div class="col-4 col-12-mobile">
-									<article class="item">
-										<a href="#" class="image fit"><img src="images/pic06.jpg" alt="" /></a>
-										<header>
-											<h3>Dolor Penatibus</h3>
-										</header>
-									</article>
-									<article class="item">
-										<a href="#" class="image fit"><img src="images/pic07.jpg" alt="" /></a>
-										<header>
-											<h3>Orci Convallis</h3>
-										</header>
-									</article>
-								</div>
-							</div>
-
-						</div>
-					</section>
-
-				<!-- About Me -->
-					<section id="about" class="three">
-						<div class="container">
-
-							<header>
-								<h2>About Me</h2>
-							</header>
-
-							<a href="#" class="image featured"><img src="images/pic08.jpg" alt="" /></a>
-
-							<p>Tincidunt eu elit diam magnis pretium accumsan etiam id urna. Ridiculus
-							ultricies curae quis et rhoncus velit. Lobortis elementum aliquet nec vitae
-							laoreet eget cubilia quam non etiam odio tincidunt montes. Elementum sem
-							parturient nulla quam placerat viverra mauris non cum elit tempus ullamcorper
-							dolor. Libero rutrum ut lacinia donec curae mus vel quisque sociis nec
-							ornare iaculis.</p>
-
-						</div>
-					</section>
-
-				<!-- Contact -->
-					<section id="contact" class="four">
-						<div class="container">
-
-							<header>
-								<h2>Contact</h2>
-							</header>
-
-							<p>Elementum sem parturient nulla quam placerat viverra
-							mauris non cum elit tempus ullamcorper dolor. Libero rutrum ut lacinia
-							donec curae mus. Eleifend id porttitor ac ultricies lobortis sem nunc
-							orci ridiculus faucibus a consectetur. Porttitor curae mauris urna mi dolor.</p>
-
-							<form method="post" action="#">
-								<div class="row">
-									<div class="col-6 col-12-mobile"><input type="text" name="name" placeholder="Name" /></div>
-									<div class="col-6 col-12-mobile"><input type="text" name="email" placeholder="Email" /></div>
-									<div class="col-12">
-										<textarea name="message" placeholder="Message"></textarea>
-									</div>
-									<div class="col-12">
-										<input type="submit" value="Send Message" />
-									</div>
-								</div>
-							</form>
-
-						</div>
-					</section>
-
-			</div>
-
-		<!-- Footer -->
-			<div id="footer">
-
-				<!-- Copyright -->
-					<ul class="copyright">
-						<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="#">Benitin</a></li>
-					</ul>
-
-			</div>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-
-	</body>
+    <script>
+        // Elementos del DOM
+        const brainButton = document.getElementById('brainButton');
+        const status = document.getElementById('status');
+        const waves = document.getElementById('waves');
+        
+        // Variables globales
+        const API_KEY = "AIzaSyAjt15fLEcxsXkGeZjBpu0BHKOt1HI6Gxs";
+        let recognition = null;
+        let synthesis = null;
+        let isListening = false;
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSpeechRecognition();
+            initializeSpeechSynthesis();
+        });
+        
+        // Configurar reconocimiento de voz
+        function initializeSpeechRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showError("Tu navegador no soporta reconocimiento de voz");
+                brainButton.disabled = true;
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            // Configuración mejorada
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'es-ES';
+            recognition.maxAlternatives = 1;
+            
+            // Eventos
+            recognition.onstart = function() {
+                isListening = true;
+                status.textContent = "Escuchando... habla ahora";
+                status.className = "status success";
+                brainButton.classList.add('listening');
+                waves.style.display = 'block';
+            };
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                status.textContent = `Pregunta: "${transcript}"`;
+                brainButton.classList.remove('listening');
+                waves.style.display = 'none';
+                
+                // Enviar a Gemini
+                sendToGemini(transcript);
+            };
+            
+            recognition.onerror = function(event) {
+                isListening = false;
+                brainButton.classList.remove('listening');
+                waves.style.display = 'none';
+                
+                let errorMessage = "Error de reconocimiento: ";
+                switch(event.error) {
+                    case 'no-speech':
+                        errorMessage = "No se detectó voz. Intenta de nuevo.";
+                        break;
+                    case 'audio-capture':
+                        errorMessage = "No se pudo acceder al micrófono.";
+                        break;
+                    case 'not-allowed':
+                        errorMessage = "Permiso de micrófono denegado.";
+                        break;
+                    default:
+                        errorMessage = "Error: " + event.error;
+                }
+                
+                showError(errorMessage);
+                setTimeout(() => {
+                    status.textContent = "Presiona el cerebro para hablar";
+                    status.className = "status";
+                }, 3000);
+            };
+            
+            recognition.onend = function() {
+                isListening = false;
+                brainButton.classList.remove('listening');
+                waves.style.display = 'none';
+                
+                if (status.textContent === "Escuchando... habla ahora") {
+                    status.textContent = "No se detectó voz. Intenta de nuevo.";
+                    status.className = "status error";
+                    setTimeout(() => {
+                        status.textContent = "Presiona el cerebro para hablar";
+                        status.className = "status";
+                    }, 3000);
+                }
+            };
+        }
+        
+        // Configurar síntesis de voz
+        function initializeSpeechSynthesis() {
+            if (!('speechSynthesis' in window)) {
+                showError("Tu navegador no soporta síntesis de voz");
+                return;
+            }
+            
+            synthesis = window.speechSynthesis;
+        }
+        
+        // Event Listener para el botón
+        brainButton.addEventListener('click', function() {
+            if (!recognition) {
+                showError("Reconocimiento de voz no disponible");
+                return;
+            }
+            
+            if (isListening) {
+                recognition.stop();
+                return;
+            }
+            
+            try {
+                recognition.start();
+            } catch (error) {
+                showError("Error al iniciar reconocimiento: " + error.message);
+            }
+        });
+        
+        // Función para enviar consulta a Gemini
+        async function sendToGemini(query) {
+            status.textContent = "Procesando tu pregunta...";
+            status.className = "status";
+            
+            try {
+                // En una implementación real, aquí harías la llamada a la API de Gemini
+                const response = await callGeminiAPI(query);
+                
+                // Reproducir respuesta
+                speakResponse(response);
+                
+            } catch (error) {
+                let errorMessage;
+                
+                if (error.message.includes("créditos")) {
+                    errorMessage = "Los créditos de uso se han agotado, contacta a Rafael para arreglarlo";
+                } else {
+                    errorMessage = "Error al conectar con Gemini: " + error.message;
+                }
+                
+                showError(errorMessage);
+                speakResponse(errorMessage);
+            }
+        }
+        
+        // Función para llamar a la API de Gemini (simulada)
+        async function callGeminiAPI(query) {
+            // Simulamos un retardo de red
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Verificar si la consulta está relacionada con el aprendizaje de español
+            const spanishLearningKeywords = [
+                'español', 'espanol', 'aprender', 'idioma', 'lengua', 'gramática', 'gramatica',
+                'vocabulario', 'verbos', 'conjugación', 'conjugacion', 'pronunciación', 'pronunciacion',
+                'ejercicio', 'práctica', 'practica', 'lección', 'leccion', 'clase', 'profesor',
+                'tutor', 'enseñar', 'ensenar', 'traducir', 'traducción', 'traduccion', 'palabra',
+                'frase', 'oración', 'oracion', 'conversación', 'conversacion', 'hablar', 'escuchar',
+                'leer', 'escribir', 'ejemplo', 'regla', 'explicación', 'explicacion', 'significado',
+                'sinónimo', 'sinonimo', 'antónimo', 'antonimo', 'acento', 'tilde', 'género', 'genero',
+                'número', 'numero', 'singular', 'plural', 'tiempo', 'modo', 'indicativo', 'subjuntivo',
+                'imperativo', 'pretérito', 'preterito', 'futuro', 'condicional', 'presente', 'pasado',
+                'ser', 'estar', 'haber', 'tener', 'hacer', 'decir', 'ir', 'ver', 'dar', 'saber',
+                'querer', 'llegar', 'pasar', 'deber', 'poner', 'parecer', 'quedar', 'creer', 'hablar',
+                'llevar', 'dejar', 'seguir', 'encontrar', 'llamar', 'venir', 'pensar', 'salir', 'volver',
+                'tomar', 'conocer', 'vivir', 'sentir', 'tratar', 'mirar', 'esperar', 'contar', 'empezar',
+                'buscar', 'existir', 'entrar', 'trabajar', 'escribir', 'perder', 'producir', 'ocurrir',
+                'entender', 'pedir', 'recibir', 'recordar', 'terminar', 'permitir', 'aparecer', 'conseguir',
+                'comenzar', 'servir', 'sacar', 'necesitar', 'mantener', 'resultar', 'leer', 'caer', 'cambiar',
+                'presentar', 'crear', 'abrir', 'considerar', 'oír', 'acabar', 'convertir', 'ganar', 'formar',
+                'traer', 'partir', 'morir', 'aceptar', 'realizar', 'suponer', 'comprender', 'lograr',
+                'explicar', 'preguntar', 'tocar', 'reconocer', 'estudiar', 'alcanzar', 'nacer', 'dirigir',
+                'correr', 'utilizar', 'pagar', 'ayudar', 'gustar', 'jugar', 'escuchar', 'cumplir', 'ofrecer',
+                'descubrir', 'levantar', 'intentar', 'usar', 'decidir', 'repetir', 'comer', 'mostrar'
+            ];
+            
+            const lowerQuery = query.toLowerCase();
+            const isRelatedToSpanish = spanishLearningKeywords.some(keyword => 
+                lowerQuery.includes(keyword)
+            );
+            
+            if (!isRelatedToSpanish) {
+                return "Rafael programó la app como un tutor de español. Por favor, haz preguntas relacionadas con el aprendizaje del idioma español.";
+            }
+            
+            // Respuestas específicas para diferentes tipos de preguntas
+            if (lowerQuery.includes('hola') || lowerQuery.includes('buenos días') || lowerQuery.includes('buenas tardes')) {
+                return "¡Hola! Soy tu tutor de español. ¿En qué puedo ayudarte con tu aprendizaje del idioma hoy?";
+            } else if (lowerQuery.includes('cómo') && lowerQuery.includes('estar')) {
+                return "¡Estoy aquí para ayudarte con el español! Como tutor de idiomas, mi propósito es asistirte en tu aprendizaje. ¿Qué te gustaría practicar hoy?";
+            } else if (lowerQuery.includes('verbo') || lowerQuery.includes('conjugación') || lowerQuery.includes('conjugacion')) {
+                return "Los verbos en español se conjugan según el tiempo, modo, persona y número. Por ejemplo, el verbo 'hablar' en presente: yo hablo, tú hablas, él habla. ¿Te gustaría que te explique algún verbo en particular?";
+            } else if (lowerQuery.includes('gramática') || lowerQuery.includes('gramatica')) {
+                return "La gramática española incluye reglas sobre artículos, sustantivos, adjetivos, verbos y más. Un aspecto importante es la concordancia entre género y número. ¿Qué aspecto específico te interesa?";
+            } else if (lowerQuery.includes('vocabulario') || lowerQuery.includes('palabra')) {
+                return "Para expandir tu vocabulario en español, te recomiendo practicar con listas temáticas y usar las nuevas palabras en contexto. Por ejemplo, palabras relacionadas con la comida: manzana, pan, queso, leche. ¿Hay alguna palabra específica que quieras aprender?";
+            } else if (lowerQuery.includes('pronunciación') || lowerQuery.includes('pronunciacion')) {
+                return "La pronunciación en español es generalmente fonética. Un sonido que puede ser difícil para aprendices es la 'rr' vibrante, como en 'perro'. ¿Te gustaría que te ayude con la pronunciación de algún sonido específico?";
+            } else if (lowerQuery.includes('ejercicio') || lowerQuery.includes('práctica') || lowerQuery.includes('practica')) {
+                return "Para practicar español, te recomiendo ejercicios de completar espacios, conversaciones guiadas y escuchar contenido en español. También es útil leer en voz alta y grabarse para mejorar la pronunciación. ¿Qué tipo de ejercicio te gustaría hacer?";
+            } else if (lowerQuery.includes('diferenci') || lowerQuery.includes('ser') || lowerQuery.includes('estar')) {
+                return "Una duda común es la diferencia entre 'ser' y 'estar'. 'Ser' se usa para características permanentes, como 'soy alto', mientras que 'estar' se usa para estados temporales, como 'estoy cansado'. ¿Te ayudo con más ejemplos?";
+            } else {
+                return "Interesante pregunta sobre el aprendizaje de español. Para mejorar en el idioma es importante practicar regularmente, escuchar hablantes nativos y no tener miedo a cometer errores. ¿Hay algún aspecto específico del español que te gustaría explorar?";
+            }
+        }
+        
+        // Función para convertir texto a voz
+        function speakResponse(text) {
+            if (!synthesis) {
+                showError("La síntesis de voz no está disponible");
+                return;
+            }
+            
+            // Cancelar cualquier reproducción en curso
+            synthesis.cancel();
+            
+            // Crear utterance
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            // Eventos del utterance
+            utterance.onstart = function() {
+                status.textContent = "Respondiendo...";
+                status.className = "status success";
+            };
+            
+            utterance.onend = function() {
+                status.textContent = "Presiona el cerebro para hacer otra pregunta";
+                status.className = "status";
+            };
+            
+            utterance.onerror = function(event) {
+                showError("Error al reproducir la respuesta");
+            };
+            
+            // Reproducir
+            synthesis.speak(utterance);
+        }
+        
+        // Función para mostrar errores
+        function showError(message) {
+            status.textContent = message;
+            status.className = "status error";
+        }
+    </script>
+</body>
 </html>
