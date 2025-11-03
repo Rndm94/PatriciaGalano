@@ -279,10 +279,7 @@
             status.className = "status";
             
             try {
-                // En una implementación real, aquí harías la llamada a la API de Gemini
                 const response = await callGeminiAPI(query);
-                
-                // Reproducir respuesta
                 speakResponse(response);
                 
             } catch (error) {
@@ -291,7 +288,7 @@
                 if (error.message.includes("créditos")) {
                     errorMessage = "Los créditos de uso se han agotado, contacta a Rafael para arreglarlo";
                 } else {
-                    errorMessage = "Error al conectar con Gemini: " + error.message;
+                    errorMessage = "Error al conectar con Gemini";
                 }
                 
                 showError(errorMessage);
@@ -311,22 +308,7 @@
                 'ejercicio', 'práctica', 'practica', 'lección', 'leccion', 'clase', 'profesor',
                 'tutor', 'enseñar', 'ensenar', 'traducir', 'traducción', 'traduccion', 'palabra',
                 'frase', 'oración', 'oracion', 'conversación', 'conversacion', 'hablar', 'escuchar',
-                'leer', 'escribir', 'ejemplo', 'regla', 'explicación', 'explicacion', 'significado',
-                'sinónimo', 'sinonimo', 'antónimo', 'antonimo', 'acento', 'tilde', 'género', 'genero',
-                'número', 'numero', 'singular', 'plural', 'tiempo', 'modo', 'indicativo', 'subjuntivo',
-                'imperativo', 'pretérito', 'preterito', 'futuro', 'condicional', 'presente', 'pasado',
-                'ser', 'estar', 'haber', 'tener', 'hacer', 'decir', 'ir', 'ver', 'dar', 'saber',
-                'querer', 'llegar', 'pasar', 'deber', 'poner', 'parecer', 'quedar', 'creer', 'hablar',
-                'llevar', 'dejar', 'seguir', 'encontrar', 'llamar', 'venir', 'pensar', 'salir', 'volver',
-                'tomar', 'conocer', 'vivir', 'sentir', 'tratar', 'mirar', 'esperar', 'contar', 'empezar',
-                'buscar', 'existir', 'entrar', 'trabajar', 'escribir', 'perder', 'producir', 'ocurrir',
-                'entender', 'pedir', 'recibir', 'recordar', 'terminar', 'permitir', 'aparecer', 'conseguir',
-                'comenzar', 'servir', 'sacar', 'necesitar', 'mantener', 'resultar', 'leer', 'caer', 'cambiar',
-                'presentar', 'crear', 'abrir', 'considerar', 'oír', 'acabar', 'convertir', 'ganar', 'formar',
-                'traer', 'partir', 'morir', 'aceptar', 'realizar', 'suponer', 'comprender', 'lograr',
-                'explicar', 'preguntar', 'tocar', 'reconocer', 'estudiar', 'alcanzar', 'nacer', 'dirigir',
-                'correr', 'utilizar', 'pagar', 'ayudar', 'gustar', 'jugar', 'escuchar', 'cumplir', 'ofrecer',
-                'descubrir', 'levantar', 'intentar', 'usar', 'decidir', 'repetir', 'comer', 'mostrar'
+                'leer', 'escribir', 'ejemplo', 'regla', 'explicación', 'explicacion', 'significado'
             ];
             
             const lowerQuery = query.toLowerCase();
@@ -335,28 +317,34 @@
             );
             
             if (!isRelatedToSpanish) {
-                return "Rafael programó la app como un tutor de español. Por favor, haz preguntas relacionadas con el aprendizaje del idioma español.";
+                return "Soy un tutor de español. Haz preguntas sobre el idioma.";
             }
             
-            // Respuestas específicas para diferentes tipos de preguntas
-            if (lowerQuery.includes('hola') || lowerQuery.includes('buenos días') || lowerQuery.includes('buenas tardes')) {
-                return "¡Hola! Soy tu tutor de español. ¿En qué puedo ayudarte con tu aprendizaje del idioma hoy?";
-            } else if (lowerQuery.includes('cómo') && lowerQuery.includes('estar')) {
-                return "¡Estoy aquí para ayudarte con el español! Como tutor de idiomas, mi propósito es asistirte en tu aprendizaje. ¿Qué te gustaría practicar hoy?";
-            } else if (lowerQuery.includes('verbo') || lowerQuery.includes('conjugación') || lowerQuery.includes('conjugacion')) {
-                return "Los verbos en español se conjugan según el tiempo, modo, persona y número. Por ejemplo, el verbo 'hablar' en presente: yo hablo, tú hablas, él habla. ¿Te gustaría que te explique algún verbo en particular?";
-            } else if (lowerQuery.includes('gramática') || lowerQuery.includes('gramatica')) {
-                return "La gramática española incluye reglas sobre artículos, sustantivos, adjetivos, verbos y más. Un aspecto importante es la concordancia entre género y número. ¿Qué aspecto específico te interesa?";
-            } else if (lowerQuery.includes('vocabulario') || lowerQuery.includes('palabra')) {
-                return "Para expandir tu vocabulario en español, te recomiendo practicar con listas temáticas y usar las nuevas palabras en contexto. Por ejemplo, palabras relacionadas con la comida: manzana, pan, queso, leche. ¿Hay alguna palabra específica que quieras aprender?";
-            } else if (lowerQuery.includes('pronunciación') || lowerQuery.includes('pronunciacion')) {
-                return "La pronunciación en español es generalmente fonética. Un sonido que puede ser difícil para aprendices es la 'rr' vibrante, como en 'perro'. ¿Te gustaría que te ayude con la pronunciación de algún sonido específico?";
-            } else if (lowerQuery.includes('ejercicio') || lowerQuery.includes('práctica') || lowerQuery.includes('practica')) {
-                return "Para practicar español, te recomiendo ejercicios de completar espacios, conversaciones guiadas y escuchar contenido en español. También es útil leer en voz alta y grabarse para mejorar la pronunciación. ¿Qué tipo de ejercicio te gustaría hacer?";
-            } else if (lowerQuery.includes('diferenci') || lowerQuery.includes('ser') || lowerQuery.includes('estar')) {
-                return "Una duda común es la diferencia entre 'ser' y 'estar'. 'Ser' se usa para características permanentes, como 'soy alto', mientras que 'estar' se usa para estados temporales, como 'estoy cansado'. ¿Te ayudo con más ejemplos?";
+            // Respuestas concisas según el tipo de pregunta
+            if (lowerQuery.includes('hola')) {
+                return "Hola. ¿En qué puedo ayudarte con el español?";
+            } else if (lowerQuery.includes('verbo') && lowerQuery.includes('ser')) {
+                return "Ser: soy, eres, es, somos, sois, son.";
+            } else if (lowerQuery.includes('verbo') && lowerQuery.includes('estar')) {
+                return "Estar: estoy, estás, está, estamos, estáis, están.";
+            } else if (lowerQuery.includes('verbo') && lowerQuery.includes('tener')) {
+                return "Tener: tengo, tienes, tiene, tenemos, tenéis, tienen.";
+            } else if (lowerQuery.includes('diferencia') && lowerQuery.includes('ser') && lowerQuery.includes('estar')) {
+                return "Ser: características permanentes. Estar: estados temporales.";
+            } else if (lowerQuery.includes('género')) {
+                return "En español, los sustantivos tienen género masculino o femenino.";
+            } else if (lowerQuery.includes('número')) {
+                return "Los sustantivos tienen número singular o plural.";
+            } else if (lowerQuery.includes('artículo')) {
+                return "Artículos: el, la, los, las (definidos), un, una, unos, unas (indefinidos).";
+            } else if (lowerQuery.includes('adjetivo')) {
+                return "Los adjetivos concuerdan en género y número con el sustantivo.";
+            } else if (lowerQuery.includes('pronunciación')) {
+                return "La pronunciación española es fonética. Cada letra tiene un sonido.";
+            } else if (lowerQuery.includes('acento')) {
+                return "El acento ortográfico (´) marca la sílaba tónica en algunas palabras.";
             } else {
-                return "Interesante pregunta sobre el aprendizaje de español. Para mejorar en el idioma es importante practicar regularmente, escuchar hablantes nativos y no tener miedo a cometer errores. ¿Hay algún aspecto específico del español que te gustaría explorar?";
+                return "Pregunta específica sobre español para respuesta concreta.";
             }
         }
         
