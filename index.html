@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutor de Español con Gemini</title>
+    <title>Gemini</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background: white;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,137 +21,50 @@
             overflow: hidden;
         }
 
-        .container {
-            text-align: center;
-            position: relative;
-        }
-
         .brain-button {
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: linear-gradient(145deg, #8e2de2, #4a00e0);
-            border: none;
+            background: white;
+            border: 2px solid #000;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 90px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             transition: all 0.3s ease;
             user-select: none;
-            position: relative;
-            z-index: 10;
         }
 
         .brain-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            background: #f5f5f5;
         }
 
         .brain-button:active {
-            transform: scale(0.98);
+            transform: scale(0.95);
         }
 
         .listening {
             animation: pulse 0.3s infinite alternate;
-            background: linear-gradient(145deg, #ff416c, #ff4b2b);
+            background: #f0f0f0;
         }
 
         @keyframes pulse {
             from {
                 transform: scale(1);
-                box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
             }
             to {
-                transform: scale(1.15);
-                box-shadow: 0 0 50px rgba(255, 255, 255, 1);
+                transform: scale(1.1);
             }
-        }
-
-        .status {
-            margin-top: 40px;
-            color: white;
-            font-size: 22px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-            min-height: 30px;
-            font-weight: 500;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 10px 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(5px);
-        }
-
-        .waves {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            animation: wave 2s infinite;
-            pointer-events: none;
-        }
-
-        .waves.listening {
-            display: block;
-        }
-
-        @keyframes wave {
-            0% {
-                width: 250px;
-                height: 250px;
-                opacity: 1;
-            }
-            100% {
-                width: 400px;
-                height: 400px;
-                opacity: 0;
-            }
-        }
-
-        .footer {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 16px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .error {
-            color: #ff6b6b;
-            background: rgba(255, 107, 107, 0.1);
-        }
-
-        .success {
-            color: #51cf66;
-            background: rgba(81, 207, 102, 0.1);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <button class="brain-button" id="brainButton">🧠</button>
-        <div class="waves" id="waves"></div>
-        <div class="status" id="status">Presiona el cerebro para hablar</div>
-    </div>
-    
-    <div class="footer">
-        Tutor de Español - Desarrollado por Rafael
-    </div>
+    <button class="brain-button" id="brainButton">🧠</button>
 
     <script>
         // Elementos del DOM
         const brainButton = document.getElementById('brainButton');
-        const status = document.getElementById('status');
-        const waves = document.getElementById('waves');
         
         // Variables globales
         const API_KEY = "AIzaSyAjt15fLEcxsXkGeZjBpu0BHKOt1HI6Gxs";
@@ -168,98 +81,50 @@
         // Configurar reconocimiento de voz
         function initializeSpeechRecognition() {
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                showError("Tu navegador no soporta reconocimiento de voz");
-                brainButton.disabled = true;
                 return;
             }
             
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             
-            // Configuración mejorada
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.lang = 'es-ES';
             recognition.maxAlternatives = 1;
             
-            // Eventos
             recognition.onstart = function() {
                 isListening = true;
-                status.textContent = "Escuchando... habla ahora";
-                status.className = "status success";
                 brainButton.classList.add('listening');
-                waves.style.display = 'block';
             };
             
             recognition.onresult = function(event) {
                 const transcript = event.results[0][0].transcript;
-                status.textContent = `Pregunta: "${transcript}"`;
                 brainButton.classList.remove('listening');
-                waves.style.display = 'none';
-                
-                // Enviar a Gemini
                 sendToGemini(transcript);
             };
             
             recognition.onerror = function(event) {
                 isListening = false;
                 brainButton.classList.remove('listening');
-                waves.style.display = 'none';
-                
-                let errorMessage = "Error de reconocimiento: ";
-                switch(event.error) {
-                    case 'no-speech':
-                        errorMessage = "No se detectó voz. Intenta de nuevo.";
-                        break;
-                    case 'audio-capture':
-                        errorMessage = "No se pudo acceder al micrófono.";
-                        break;
-                    case 'not-allowed':
-                        errorMessage = "Permiso de micrófono denegado.";
-                        break;
-                    default:
-                        errorMessage = "Error: " + event.error;
-                }
-                
-                showError(errorMessage);
-                setTimeout(() => {
-                    status.textContent = "Presiona el cerebro para hablar";
-                    status.className = "status";
-                }, 3000);
             };
             
             recognition.onend = function() {
                 isListening = false;
                 brainButton.classList.remove('listening');
-                waves.style.display = 'none';
-                
-                if (status.textContent === "Escuchando... habla ahora") {
-                    status.textContent = "No se detectó voz. Intenta de nuevo.";
-                    status.className = "status error";
-                    setTimeout(() => {
-                        status.textContent = "Presiona el cerebro para hablar";
-                        status.className = "status";
-                    }, 3000);
-                }
             };
         }
         
         // Configurar síntesis de voz
         function initializeSpeechSynthesis() {
             if (!('speechSynthesis' in window)) {
-                showError("Tu navegador no soporta síntesis de voz");
                 return;
             }
-            
             synthesis = window.speechSynthesis;
         }
         
         // Event Listener para el botón
         brainButton.addEventListener('click', function() {
-            if (!recognition) {
-                showError("Reconocimiento de voz no disponible");
-                return;
-            }
+            if (!recognition) return;
             
             if (isListening) {
                 recognition.stop();
@@ -269,125 +134,66 @@
             try {
                 recognition.start();
             } catch (error) {
-                showError("Error al iniciar reconocimiento: " + error.message);
+                // Silenciar errores
             }
         });
         
         // Función para enviar consulta a Gemini
         async function sendToGemini(query) {
-            status.textContent = "Procesando tu pregunta...";
-            status.className = "status";
-            
             try {
                 const response = await callGeminiAPI(query);
                 speakResponse(response);
-                
             } catch (error) {
-                let errorMessage;
-                
-                if (error.message.includes("créditos")) {
-                    errorMessage = "Los créditos de uso se han agotado, contacta a Rafael para arreglarlo";
-                } else {
-                    errorMessage = "Error al conectar con Gemini";
-                }
-                
-                showError(errorMessage);
-                speakResponse(errorMessage);
+                // Silenciar errores
             }
         }
         
-        // Función para llamar a la API de Gemini (simulada)
+        // Función REAL para llamar a la API de Gemini
         async function callGeminiAPI(query) {
-            // Simulamos un retardo de red
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
             
-            // Verificar si la consulta está relacionada con el aprendizaje de español
-            const spanishLearningKeywords = [
-                'español', 'espanol', 'aprender', 'idioma', 'lengua', 'gramática', 'gramatica',
-                'vocabulario', 'verbos', 'conjugación', 'conjugacion', 'pronunciación', 'pronunciacion',
-                'ejercicio', 'práctica', 'practica', 'lección', 'leccion', 'clase', 'profesor',
-                'tutor', 'enseñar', 'ensenar', 'traducir', 'traducción', 'traduccion', 'palabra',
-                'frase', 'oración', 'oracion', 'conversación', 'conversacion', 'hablar', 'escuchar',
-                'leer', 'escribir', 'ejemplo', 'regla', 'explicación', 'explicacion', 'significado'
-            ];
-            
-            const lowerQuery = query.toLowerCase();
-            const isRelatedToSpanish = spanishLearningKeywords.some(keyword => 
-                lowerQuery.includes(keyword)
-            );
-            
-            if (!isRelatedToSpanish) {
-                return "Soy un tutor de español. Haz preguntas sobre el idioma.";
+            const requestBody = {
+                contents: [{
+                    parts: [{
+                        text: query
+                    }]
+                }]
+            };
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                throw new Error('API Error');
             }
+
+            const data = await response.json();
             
-            // Respuestas concisas según el tipo de pregunta
-            if (lowerQuery.includes('hola')) {
-                return "Hola. ¿En qué puedo ayudarte con el español?";
-            } else if (lowerQuery.includes('verbo') && lowerQuery.includes('ser')) {
-                return "Ser: soy, eres, es, somos, sois, son.";
-            } else if (lowerQuery.includes('verbo') && lowerQuery.includes('estar')) {
-                return "Estar: estoy, estás, está, estamos, estáis, están.";
-            } else if (lowerQuery.includes('verbo') && lowerQuery.includes('tener')) {
-                return "Tener: tengo, tienes, tiene, tenemos, tenéis, tienen.";
-            } else if (lowerQuery.includes('diferencia') && lowerQuery.includes('ser') && lowerQuery.includes('estar')) {
-                return "Ser: características permanentes. Estar: estados temporales.";
-            } else if (lowerQuery.includes('género')) {
-                return "En español, los sustantivos tienen género masculino o femenino.";
-            } else if (lowerQuery.includes('número')) {
-                return "Los sustantivos tienen número singular o plural.";
-            } else if (lowerQuery.includes('artículo')) {
-                return "Artículos: el, la, los, las (definidos), un, una, unos, unas (indefinidos).";
-            } else if (lowerQuery.includes('adjetivo')) {
-                return "Los adjetivos concuerdan en género y número con el sustantivo.";
-            } else if (lowerQuery.includes('pronunciación')) {
-                return "La pronunciación española es fonética. Cada letra tiene un sonido.";
-            } else if (lowerQuery.includes('acento')) {
-                return "El acento ortográfico (´) marca la sílaba tónica en algunas palabras.";
+            if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                return data.candidates[0].content.parts[0].text;
             } else {
-                return "Pregunta específica sobre español para respuesta concreta.";
+                throw new Error('Invalid response');
             }
         }
         
         // Función para convertir texto a voz
         function speakResponse(text) {
-            if (!synthesis) {
-                showError("La síntesis de voz no está disponible");
-                return;
-            }
+            if (!synthesis) return;
             
-            // Cancelar cualquier reproducción en curso
             synthesis.cancel();
             
-            // Crear utterance
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'es-ES';
             utterance.rate = 0.9;
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
             
-            // Eventos del utterance
-            utterance.onstart = function() {
-                status.textContent = "Respondiendo...";
-                status.className = "status success";
-            };
-            
-            utterance.onend = function() {
-                status.textContent = "Presiona el cerebro para hacer otra pregunta";
-                status.className = "status";
-            };
-            
-            utterance.onerror = function(event) {
-                showError("Error al reproducir la respuesta");
-            };
-            
-            // Reproducir
             synthesis.speak(utterance);
-        }
-        
-        // Función para mostrar errores
-        function showError(message) {
-            status.textContent = message;
-            status.className = "status error";
         }
     </script>
 </body>
